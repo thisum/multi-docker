@@ -1,0 +1,24 @@
+language: generic
+sudo: required
+
+services:
+  - docker
+
+defore_install:
+  - docker build -f ./client/Dockerfile.dev -t multi-docker ./client
+
+script:
+  - docker run -e CI=true multi-docker npm run test
+
+after_success:
+  - docker build -t thisum/multi-client ./client
+  - docker build -t thisum/multi-nginx ./nginx
+  - docker build -t thisum/multi-server ./server
+  - docker build -t thisum/multi-worker ./worker
+  
+  - echo "$DOCKER_PW" | docker login -u "$DOCKER_ID" --password-stdin
+  
+  - docker push thisum/multi-client
+  - docker push thisum/multi-nginx
+  - docker push thisum/multi-server
+  - docker push thisum/multi-worker
