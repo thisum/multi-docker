@@ -1,0 +1,35 @@
+{
+	"AWSEBDockerrunVersion": 2,
+	"containerDefinitions": [
+		{
+			"name": "client",
+			"image": "thisum/multi-client",
+			"hostname": "client",
+			"essential": false
+		},
+		{
+			"name": "server",
+			"image": "thisum/multi-server",
+			"hostname": "api",
+			"essential": false
+		},
+		{
+			"name": "worker",
+			"image": "thisum/multi-worker",
+			"hostname": "worker",
+			"essential": false
+		},
+		{
+			"name": "nginx",
+			"image": "thisum/multi-nginx",
+			"essential": true,
+			"links": ["client", "server"],
+			"portMappings": [
+				{
+					"hostPort": 80,
+					"containerPort": 80
+				}
+			]
+		}
+	]	
+}
